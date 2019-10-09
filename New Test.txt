@@ -1,0 +1,94 @@
+*** Settings ***
+Library           AppiumLibrary
+
+*** Variables ***
+${REMOTE_URL}     http://localhost:4723/wd/hub
+${platformName}    Android
+${platformVersion}    9
+${deviceName}     Android
+${automationName}    uiautomator2
+${appPackage}     com.cyberlink.youcammakeup
+${appActivity}    activity.SplashActivity
+${OnReset}        Ture
+${tile}           Photo Makeup
+${photo_folder}    YouCam Makeup Sample
+${Look_name}      Exquisite
+${Photo_quality}    Ultra High
+
+*** Test Cases ***
+TestCase1
+    Open App
+
+Permission
+    Set Permission
+
+Skip openning
+    Skip open tutorial
+
+Select a photo
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/launcherTilesRegion
+    Click text    ${tile}
+    Click text    ${photo_folder}
+    Click Element    com.cyberlink.youcammakeup:id/photoItemImage
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/lookItemName
+    Click text    ${Look_name}
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/topToolBarExportBtn
+    Click text    Save
+
+Result page back to launcher
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/sharePageTopBarFunction
+    Click Element    com.cyberlink.youcammakeup:id/sharePageHomeButton
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/dialogExContainer
+    Click Element    com.cyberlink.youcammakeup:id/promote_close_btn
+
+Select photo quality
+    Run Keyword If    '${Photo_quality}'== 'Smart HD'    Run Keywords    Smart HD
+    ELSE IF    '${Photo_quality}'== 'Ultra High'    Ultra High
+
+Change to Ultra High
+    Ultra High
+
+Change to Smart HD
+    Smart HD
+
+Clear Data
+    Reset Application
+
+Back to Launcher
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/dialogExContainer
+    Click Element    com.cyberlink.youcammakeup:id/promote_close_btn
+
+*** Keywords ***
+Open App
+    Open Application    http://localhost:4723/wd/hub    platformName=${platformName}    platformVersion=${platformVersion}    deviceName=${deviceName}    automationName=${automationName}    appPackage=${appPackage}
+    ...    appActivity=${appActivity}    OnReset=${OnReset}    app=${CURDIR}${/}app${/}YouCamMakeup-5.56.1.5801.34011137.apk
+
+Set Permission
+    Wait Until Page Contains Element    com.android.packageinstaller:id/permission_message
+    Click Element    com.android.packageinstaller:id/permission_allow_button
+
+Skip open tutorial
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/tutorialSkipBtn
+    Click Element    com.cyberlink.youcammakeup:id/tutorialSkipBtn
+    Click Element    com.cyberlink.youcammakeup:id/alertDialog_buttonPositive
+
+Ultra High
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/launcherSettingButton
+    Click Element    com.cyberlink.youcammakeup:id/launcherSettingButton
+    Click Element    com.cyberlink.youcammakeup:id/photoQualityRowBtn
+    Click text    Ultra High
+    Click Element    com.cyberlink.youcammakeup:id/aboutBackBtn
+    Click Element    com.cyberlink.youcammakeup:id/btn_setting_back
+
+Smart HD
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/launcherSettingButton
+    Click Element    com.cyberlink.youcammakeup:id/launcherSettingButton
+    Click Element    com.cyberlink.youcammakeup:id/photoQualityRowBtn
+    Click text    Smart HD
+    Wait Until Page Contains Element    com.cyberlink.youcammakeup:id/dialogExContainer
+    Click text    7-DAY FREE TRIAL
+    Wait Until Page Contains Element    com.android.vending:id/content
+    Click Element    com.android.vending:id/footer_placeholder
+    Wait Until Page Contains Element    com.android.vending:id/input
+    Input Password    com.android.vending:id/input    qwer800526
+    Click text    VERIFY
